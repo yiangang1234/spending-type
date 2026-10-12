@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>소비 성향 테스트</title>
+<meta name="description" content="24개 질문으로 알아보는 나의 소비 유형 16가지">
+<meta property="og:title" content="나의 소비 성향 테스트">
+<meta property="og:description" content="24개 질문으로 알아보는 16가지 소비 유형">
+<meta name="theme-color" content="#f4efe6">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M7 3h18v26l-3-2-3 2-3-2-3 2-3-2-3 2z' fill='%23e4573d'/%3E%3Cpath d='M11 10h10M11 15h10M11 20h6' stroke='%23fff' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  :root {
+    --bg: #f4efe6;
+    --surface: #fffdf8;
+    --ink: #1f1c17;
+    --muted: #6f685d;
+    --line: #e3dccf;
+    --paper: #fffefa;
+    --paper-ink: #1f1c17;
+    --paper-muted: #7a7366;
+    --c1: #e4573d;
+    --c2: #1f9a8a;
+    --c3: #6c5ce7;
+    --c4: #d98e0b;
+    --shadow: 0 12px 32px rgba(70, 50, 20, .10);
+    --radius: 18px;
+    --mono: ui-monospace, "SF Mono", "D2Coding", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16140f;
+      --surface: #221f19;
+      --ink: #f2ede3;
+      --muted: #a39b8d;
+      --line: #36312a;
+      --shadow: 0 12px 32px rgba(0, 0, 0, .45);
+      --c1: #f06a51;
+      --c2: #34b3a2;
+      --c3: #8b7cf6;
+      --c4: #eba531;
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    word-break: keep-all;
+    min-height: 100vh;
+  }
+  button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; }
+  [hidden] { display: none !important; }
+
+  .app { max-width: 480px; margin: 0 auto; padding: 24px 16px 48px; }
+  .screen { animation: fadeUp .45s ease both; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+  /* ---------- 시작 화면 ---------- */
+  .hero {
+    background: var(--surface);
+    border-radius: 24px;
+    padding: 32px 24px 28px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "";
+    position: absolute; right: -40px; top: -40px;
+    width: 160px; height: 160px; border-radius: 50%;
+    background: conic-gradient(var(--c1) 0 25%, var(--c2) 0 50%, var(--c3) 0 75%, var(--c4) 0);
+    opacity: .9;
+  }
+  .hero::after {
+    content: "";
+    position: absolute; right: 0; top: 0;
+    width: 80px; height: 80px; border-radius: 50%;
+    background: var(--surface);
+  }
+  .badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px; letter-spacing: .14em;
+    color: var(--muted);
+    border: 1px dashed var(--line);
+    padding: 4px 10px; border-radius: 99px;
+    position: relative; z-index: 1;
+  }
+  .hero h1 { font-size: 32px; line-height: 1.25; font-weight: 800; margin: 18px 0 10px; letter-spacing: -.02em; position: relative; z-index: 1; }
+  .hero h1 em { font-style: normal; color: var(--c1); }
+  .lead { color: var(--muted); font-size: 15px; }
+  .meta { display: flex; gap: 8px; flex-wrap: wrap; margin: 18px 0 24px; }
+  .meta span { font-size: 13px; font-weight: 600; background: var(--bg); padding: 6px 12px; border-radius: 99px; }
+
+  .btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; height: 56px; border-radius: 16px;
+    font-size: 17px; font-weight: 700;
+    transition: transform .15s ease, filter .15s ease;
+  }
+  .btn:active { transform: scale(.98); }
+  .btn.primary { background: var(--ink); color: var(--bg); }
+  .btn.primary:hover { filter: brightness(1.15); }
+  .btn.ghost { background: var(--surface); border: 1.5px solid var(--line); }
+
+  .sec-title { font-size: 18px; font-weight: 800; margin: 36px 4px 14px; }
+  .sec-sub { color: var(--muted); font-size: 14px; margin: -8px 4px 14px; }
+
+  .axes { display: grid; gap: 10px; }
+  .axis-card {
+    background: var(--surface); border-radius: var(--radius);
+    padding: 16px 18px; border-left: 5px solid var(--ac);
+  }
+  .axis-card h3 { font-size: 13px; color: var(--muted); font-weight: 600; margin-bottom: 8px; }
+  .axis-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; }
+  .axis-side { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; }
+  .axis-side.right { justify-content: flex-end; text-align: right; }
+  .axis-side small { display: block; font-weight: 400; font-size: 12px; color: var(--muted); }
+  .letter {
+    flex: none; width: 30px; height: 30px; border-radius: 9px;
+    display: grid; place-items: center;
+    background: var(--ac); color: #fff; font-weight: 800; font-family: var(--mono); font-size: 15px;
+  }
+  .axis-vs { font-size: 12px; color: var(--muted); }
+
+  .types { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .type-card {
+    background: var(--surface); border-radius: 14px; padding: 14px;
+    border: 2px solid transparent;
+    transition: transform .15s ease;
+  }
+  .type-card.mine { border-color: var(--ink); }
+  .type-code { font-family: var(--mono); font-weight: 800; font-size: 14px; letter-spacing: .06em; }
+  .type-code span:nth-child(1) { color: var(--c1); }
+  .type-code span:nth-child(2) { color: var(--c2); }
+  .type-code span:nth-child(3) { color: var(--c3); }
+  .type-code span:nth-child(4) { color: var(--c4); }
+  .type-name { font-weight: 700; font-size: 15px; margin-top: 4px; }
+  .type-tag { color: var(--muted); font-size: 12.5px; margin-top: 2px; }
+  .mine-badge { font-size: 11px; font-weight: 700; background: var(--ink); color: var(--bg); padding: 1px 7px; border-radius: 99px; margin-left: 4px; vertical-align: 2px; }
+
+  footer { text-align: center; color: var(--muted); font-size: 12px; margin-top: 40px; }
+
+  /* ---------- 문항 화면 ---------- */
+  .quiz-top { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+  .icon-btn {
+    width: 40px; height: 40px; border-radius: 12px; flex: none;
+    background: var(--surface); display: grid; place-items: center;
+  }
+  .icon-btn:disabled { opacity: .35; cursor: default; }
+  .icon-btn svg { width: 20px; height: 20px; }
+  .progress { flex: 1; height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; }
+  .progress .bar { height: 100%; width: 0; background: var(--ac, var(--ink)); border-radius: 99px; transition: width .35s ease, background .35s ease; }
+  .count { font-family: var(--mono); font-size: 13px; color: var(--muted); min-width: 48px; text-align: right; }
+
+  .qcard {
+    background: var(--surface); border-radius: 24px; box-shadow: var(--shadow);
+    padding: 32px 24px; min-height: 220px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .qcard.swap { animation: qIn .35s ease both; }
+  @keyframes qIn { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: none; } }
+  .qnum { font-size: 13px; font-weight: 700; color: var(--ac); margin-bottom: 12px; }
+  .qtext { font-size: 22px; font-weight: 700; line-height: 1.45; letter-spacing: -.01em; }
+
+  .scale { display: flex; justify-content: space-between; align-items: center; margin: 36px 4px 10px; }
+  .dot {
+    border-radius: 50%;
+    border: 2.5px solid var(--ac);
+    transition: transform .15s ease, background .15s ease;
+    display: grid; place-items: center;
+  }
+  .dot:nth-child(1), .dot:nth-child(5) { width: 54px; height: 54px; }
+  .dot:nth-child(2), .dot:nth-child(4) { width: 44px; height: 44px; }
+  .dot:nth-child(3) { width: 34px; height: 34px; }
+  .dot:nth-child(1), .dot:nth-child(2) { border-color: var(--muted); }
+  .dot:nth-child(3) { border-color: var(--line); }
+  .dot:hover { transform: scale(1.08); }
+  .dot.on { background: var(--ac); border-color: var(--ac); }
+  .dot.on::after { content: ""; width: 10px; height: 10px; border-radius: 50%; background: #fff; }
+  .scale-labels { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); padding: 0 2px; }
+  .hint { text-align: center; color: var(--muted); font-size: 12px; margin-top: 28px; }
+
+  /* ---------- 출력 중 화면 ---------- */
+  .printing { display: grid; place-items: center; min-height: 70vh; text-align: center; }
+  .printer { width: 180px; position: relative; margin-bottom: 24px; }
+  .printer-top { height: 34px; background: var(--ink); border-radius: 12px 12px 6px 6px; position: relative; z-index: 2; }
+  .printer-slot { position: absolute; left: 20px; right: 20px; top: 24px; height: 6px; background: var(--bg); border-radius: 3px; z-index: 3; }
+  .printer-paper {
+    width: 140px; margin: -6px auto 0; background: var(--paper); height: 0;
+    animation: print 1.4s ease-in-out forwards;
+    box-shadow: var(--shadow);
+    background-image: repeating-linear-gradient(transparent 0 14px, #e8e1d3 14px 16px);
+    background-position: 0 20px;
+  }
+  @keyframes print { to { height: 120px; } }
+  .printing p { font-weight: 700; font-size: 17px; }
+  .printing small { color: var(--muted); font-family: var(--mono); font-size: 12px; }
+
+  /* ---------- 결과 영수증 ---------- */
+  .receipt {
+    background: var(--paper); color: var(--paper-ink);
+    padding: 28px 22px 26px; position: relative;
+    box-shadow: var(--shadow);
+    border-radius: 6px 6px 0 0;
+    animation: slideDown .7s cubic-bezier(.2,.8,.2,1) both;
+    margin-bottom: 26px;
+  }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-24px); clip-path: inset(0 0 100% 0); } to { opacity: 1; transform: none; clip-path: inset(0 0 -20px 0); } }
+  .receipt::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: -12px; height: 12px;
+    background:
+      linear-gradient(135deg, var(--paper) 50%, transparent 50%) 0 0 / 16px 12px,
+      linear-gradient(-135deg, var(--paper) 50%, transparent 50%) 0 0 / 16px 12px;
+  }
+  .r-head { text-align: center; }
+  .r-shop { font-family: var(--mono); font-size: 11px; letter-spacing: .2em; color: var(--paper-muted); }
+  .r-title { font-size: 20px; font-weight: 800; margin: 4px 0 8px; }
+  .r-meta { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11.5px; color: var(--paper-muted); }
+  .r-dash { border-top: 1.5px dashed #cfc6b5; margin: 16px 0; }
+
+  .r-item + .r-item { margin-top: 14px; }
+  .r-item-head { display: flex; justify-content: space-between; font-size: 12px; color: var(--paper-muted); margin-bottom: 6px; font-family: var(--mono); }
+  .r-item-head span:first-child { font-family: inherit; font-weight: 600; }
+  .r-item-row { display: grid; grid-template-columns: 74px 1fr 74px; align-items: center; gap: 8px; font-size: 13px; }
+  .r-item-row .side { color: var(--paper-muted); }
+  .r-item-row .side.win { color: var(--paper-ink); font-weight: 800; }
+  .r-item-row .side:last-child { text-align: right; }
+  .r-track { height: 10px; background: #ece5d8; border-radius: 99px; position: relative; overflow: hidden; }
+  .r-fill { position: absolute; top: 0; bottom: 0; background: var(--ac); border-radius: 99px; transition: width .9s cubic-bezier(.2,.8,.2,1) .3s; width: 0; }
+  .r-fill.left { left: 0; }
+  .r-fill.right { right: 0; }
+  .r-mid { position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1.5px; background: #fffefa; }
+
+  .r-total { display: flex; justify-content: space-between; align-items: baseline; font-family: var(--mono); }
+  .r-total > span { font-size: 13px; font-weight: 700; letter-spacing: .1em; }
+  .r-code { font-size: 40px; font-weight: 800; letter-spacing: .08em; line-height: 1; }
+  .r-code span:nth-child(1) { color: var(--c1); }
+  .r-code span:nth-child(2) { color: var(--c2); }
+  .r-code span:nth-child(3) { color: var(--c3); }
+  .r-code span:nth-child(4) { color: var(--c4); }
+  .r-name { font-size: 26px; font-weight: 800; margin-top: 14px; letter-spacing: -.02em; }
+  .r-tag { color: var(--paper-muted); font-size: 15px; margin-top: 2px; }
+  .r-desc { font-size: 15px; line-height: 1.7; }
+  .r-notes { margin-top: 14px; display: grid; grid-template-columns: auto 1fr; gap: 8px 12px; font-size: 14px; }
+  .r-notes dt { font-family: var(--mono); font-size: 12px; font-weight: 800; padding: 2px 8px; border-radius: 6px; background: #ece5d8; height: fit-content; }
+  .r-notes dt.tip { background: #fde3dc; color: #b23a22; }
+  .barcode {
+    height: 46px; margin: 22px 10px 6px;
+    background: repeating-linear-gradient(90deg,
+      var(--paper-ink) 0 2px, transparent 2px 4px, var(--paper-ink) 4px 5px, transparent 5px 8px,
+      var(--paper-ink) 8px 11px, transparent 11px 12px, var(--paper-ink) 12px 13px, transparent 13px 17px,
+      var(--paper-ink) 17px 18px, transparent 18px 20px);
+  }
+  .r-thanks { text-align: center; font-size: 12px; color: var(--paper-muted); }
+
+  .actions { display: grid; grid-template-columns: 1.4fr 1fr; gap: 10px; margin-top: 30px; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 32px; transform: translate(-50%, 20px);
+    background: var(--ink); color: var(--bg); padding: 12px 20px; border-radius: 99px;
+    font-size: 14px; font-weight: 600; opacity: 0; pointer-events: none;
+    transition: opacity .25s ease, transform .25s ease;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  @media (max-width: 360px) {
+    .hero h1 { font-size: 28px; }
+    .qtext { font-size: 20px; }
+    .dot:nth-child(1), .dot:nth-child(5) { width: 48px; height: 48px; }
+    .r-item-row { grid-template-columns: 64px 1fr 64px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+  }
+</style>
+</head>
+<body>
+<main class="app">
+
+  <!-- 시작 화면 -->
+  <section id="intro" class="screen">
+    <div class="hero">
+      <span class="badge">SPENDING TYPE TEST</span>
+      <h1>나는 어떤<br><em>소비 유형</em>일까?</h1>
+      <p class="lead">24개 질문에 답하면 나의 소비 습관을<br>영수증으로 뽑아드려요.</p>
+      <div class="meta"><span>24문항</span><span>약 3분</span><span>16가지 유형</span></div>
+      <button class="btn primary" id="startBtn">테스트 시작하기</button>
+    </div>
+
+    <h2 class="sec-title">4가지 소비 축</h2>
+    <p class="sec-sub">각 축에서 한쪽씩, 네 글자가 모여 나의 유형이 돼요.</p>
+    <div class="axes" id="axisList"></div>
+
+    <h2 class="sec-title">16가지 소비 유형</h2>
+    <div class="types" id="typeGridIntro"></div>
+
+    <footer>소비 성향 유형 검사 · 학교 프로젝트</footer>
+  </section>
+
+  <!-- 문항 화면 -->
+  <section id="quiz" class="screen" hidden>
+    <div class="quiz-top">
+      <button class="icon-btn" id="backBtn" aria-label="이전 문항">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="progress"><div class="bar" id="bar"></div></div>
+      <span class="count" id="count">1 / 24</span>
+    </div>
+    <div class="qcard" id="qcard">
+      <div class="qnum" id="qnum">Q1</div>
+      <p class="qtext" id="qtext"></p>
+    </div>
+    <div class="scale" id="scale"></div>
+    <div class="scale-labels"><span>전혀 아니다</span><span>매우 그렇다</span></div>
+    <p class="hint">솔직하게, 평소의 나를 떠올리며 골라주세요.</p>
+  </section>
+
+  <!-- 출력 중 -->
+  <section id="printing" class="screen printing" hidden>
+    <div>
+      <div class="printer">
+        <div class="printer-top"></div>
+        <div class="printer-slot"></div>
+        <div class="printer-paper"></div>
+      </div>
+      <p>소비 영수증 출력 중…</p>
+      <small>PRINTING YOUR RECEIPT</small>
+    </div>
+  </section>
+
+  <!-- 결과 화면 -->
+  <section id="result" class="screen" hidden>
+    <div class="receipt">
+      <div class="r-head">
+        <div class="r-shop">SPENDING TYPE STORE</div>
+        <div class="r-title">나의 소비 영수증</div>
+        <div class="r-meta"><span id="rDate"></span><span id="rNo"></span></div>
+      </div>
+      <div class="r-dash"></div>
+      <div id="rItems"></div>
+      <div class="r-dash"></div>
+      <div class="r-total"><span>TOTAL</span><strong class="r-code" id="rCode"></strong></div>
+      <div class="r-name" id="rName"></div>
+      <div class="r-tag" id="rTag"></div>
+      <div class="r-dash"></div>
+      <p class="r-desc" id="rDesc"></p>
+      <dl class="r-notes">
+        <dt>강점</dt><dd id="rGood"></dd>
+        <dt class="tip">주의</dt><dd id="rTip"></dd>
+      </dl>
+      <div class="barcode" aria-hidden="true"></div>
+      <div class="r-thanks">이용해 주셔서 감사합니다</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn primary" id="copyBtn">결과 링크 복사</button>
+      <button class="btn ghost" id="retryBtn">다시 하기</button>
+    </div>
+
+    <h2 class="sec-title">16가지 소비 유형</h2>
+    <div class="types" id="typeGridResult"></div>
+
+    <footer>소비 성향 유형 검사 · 학교 프로젝트</footer>
+  </section>
+</main>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+  // 4개 축: a가 앞 글자, b가 뒷 글자
+  const AXES = [
+    { title: '구매 방식', color: 'var(--c1)', a: ['P', '계획형', '비교하고 고민한 뒤 산다'], b: ['I', '즉흥형', '끌리면 바로 산다'] },
+    { title: '선택 기준', color: 'var(--c2)', a: ['C', '가성비형', '가격 대비 성능이 중요'], b: ['Q', '가심비형', '비싸도 만족감이 중요'] },
+    { title: '영향 요인', color: 'var(--c3)', a: ['M', '주관형', '내 기준대로 고른다'], b: ['T', '트렌드형', '유행·리뷰·SNS를 따른다'] },
+    { title: '소비 대상', color: 'var(--c4)', a: ['E', '경험형', '여행·맛집·공연에 쓴다'], b: ['G', '소유형', '옷·기기·굿즈에 쓴다'] },
+  ];
+
+  // [축 번호, 'a' 또는 'b'(그렇다고 답할수록 기우는 쪽), 문항]
+  const QUESTIONS = [
+    [0, 'a', '물건을 사기 전에 여러 곳의 가격을 비교해 본다.'],
+    [1, 'a', '비슷한 물건이라면 무조건 더 싼 쪽을 고른다.'],
+    [2, 'b', 'SNS나 유튜브에서 본 물건을 따라 사본 적이 많다.'],
+    [3, 'a', '같은 돈이면 물건보다 여행이나 맛집에 쓰고 싶다.'],
+    [0, 'b', '계획에 없던 물건도 마음에 들면 그 자리에서 산다.'],
+    [1, 'b', '마음에 쏙 들면 조금 비싸도 상관없다.'],
+    [2, 'a', '남들이 다 가진 물건이라도 내 취향이 아니면 안 산다.'],
+    [3, 'b', '갖고 싶은 물건 목록이 늘 머릿속에 있다.'],
+    [0, 'a', '한 달 동안 쓸 돈을 미리 정해 두는 편이다.'],
+    [1, 'a', '할인이나 쿠폰이 없으면 사는 걸 미룬다.'],
+    [2, 'b', '별점과 리뷰 수가 많은 상품에 먼저 손이 간다.'],
+    [3, 'a', '친구들과 놀러 가는 데 쓰는 돈은 아깝지 않다.'],
+    [0, 'b', "'오늘만 할인', '품절 임박' 문구를 보면 일단 사고 싶어진다."],
+    [1, 'b', '싼 걸 여러 번 사느니 좋은 걸 하나 사는 게 낫다.'],
+    [2, 'a', '리뷰보다 직접 보고 만져본 느낌을 더 믿는다.'],
+    [3, 'b', '오래 남는 물건에 돈을 쓰는 게 더 뿌듯하다.'],
+    [0, 'a', '장바구니에 담아두고 며칠 고민한 뒤 결제한다.'],
+    [1, 'a', '1+1이나 묶음 할인 상품에 끌린다.'],
+    [2, 'b', '요즘 유행하는 건 한 번쯤 해보거나 가져봐야 한다.'],
+    [3, 'a', '공연, 전시, 방탈출 같은 체험에 돈을 쓰는 편이다.'],
+    [0, 'b', "산 뒤에 '이걸 왜 샀지' 하고 후회한 적이 많다."],
+    [1, 'b', '나를 위한 작은 사치는 꼭 필요하다고 생각한다.'],
+    [2, 'a', '친구와 겹치지 않는 물건을 고르는 편이다.'],
+    [3, 'b', '택배 상자를 뜯을 때 가장 기분이 좋다.'],
+  ];
+
+  const TYPES = {
+    PCME: ['알뜰 여행가', '아껴서 떠나는 사람', '평소엔 지출을 꼼꼼히 관리하지만, 모은 돈은 내가 하고 싶은 경험에 아낌없이 씁니다. 남들이 어디 가는지보다 내가 가고 싶은 곳이 더 중요해요.', '돈을 쓰고도 후회가 적고 추억이 많이 남아요.', '경험에만 몰아 쓰다 보면 꼭 필요한 물건을 미루게 될 수 있어요.'],
+    PCMG: ['실속 살림꾼', '필요한 것만, 가장 싸게', '살 물건을 미리 정해 두고 가격 비교 끝에 최저가로 삽니다. 유행보다 쓸모가 먼저예요.', '낭비가 거의 없고 용돈 관리 능력이 뛰어나요.', '너무 아끼기만 하면 지칠 수 있어요. 가끔은 나를 위한 작은 선물도 괜찮아요.'],
+    PCTE: ['가성비 핫플러', '뜨는 곳을, 할인할 때', '요즘 뜨는 장소와 체험을 누구보다 빨리 알지만, 할인과 이벤트를 기다렸다가 갑니다.', '적은 돈으로 트렌드를 즐기는 능력자예요.', '할인 알림에 끌려 계획보다 자주 나가게 될 수 있어요.'],
+    PCTG: ['최저가 사냥꾼', '인기템을 가장 싸게', '리뷰 많은 인기 상품을 골라 둔 뒤, 가격 비교로 가장 싼 곳을 샅샅이 찾아냅니다.', '실패 없는 물건을 싸게 사요.', '남들이 많이 산다고 해서 나에게도 꼭 필요한 건 아니에요.'],
+    PQME: ['취향 큐레이터', '좋은 경험엔 투자한다', '미리 알아보고 고른 공연, 맛집, 여행에는 돈을 아끼지 않습니다. 내 취향이 뚜렷해요.', '돈을 쓴 만큼 만족도가 높아요.', '경험 비용은 생각보다 금방 커지니 예산을 정해 두세요.'],
+    PQMG: ['장인 수집가', '하나를 사도 제대로', '오래 고민해서 좋은 물건 하나를 사고, 오래 아끼며 씁니다.', '물건이 오래가서 결국 돈을 아껴요.', '고민이 너무 길어 좋은 기회를 놓칠 수도 있어요.'],
+    PQTE: ['프리미엄 예약러', '화제의 경험을 먼저', '화제가 된 레스토랑이나 공연을 미리 찾아 예약합니다. 정보력과 실행력을 함께 갖췄어요.', '남들보다 먼저 좋은 경험을 해요.', '유행이 바뀔 때마다 지출도 따라 늘 수 있어요.'],
+    PQTG: ['브랜드 연구가', '유행 브랜드를 꼼꼼하게', '요즘 인기 있는 브랜드 제품을 리뷰와 비교 영상으로 충분히 공부한 뒤 삽니다.', '사고 나서 후회하는 일이 드물어요.', '브랜드값이 품질보다 비쌀 때도 있다는 걸 기억하세요.'],
+    ICME: ['즉흥 탐험가', '싸고 끌리면 바로 출발', '갑자기 생긴 특가 여행이나 근처 체험에 바로 뛰어듭니다. 계획보다 타이밍이에요.', '남들이 놓치는 기회를 잡아요.', '작은 즉흥 지출이 모이면 생각보다 커요.'],
+    ICMG: ['득템 사냥꾼', '싸고 마음에 들면 일단 담기', '할인 매대를 그냥 지나치지 못하고, 마음에 드는 걸 싸게 건지면 행복합니다.', '소소한 득템으로 큰 즐거움을 얻어요.', '싸다고 산 물건이 쌓이면 결국 낭비예요.'],
+    ICTE: ['핫플 헌터', '뜨는 곳이면 오늘 간다', 'SNS에서 본 핫플을 바로 찾아가고, 가성비 좋은 곳을 귀신같이 압니다.', '친구들 사이에서 정보통이에요.', '모든 핫플을 다 가볼 필요는 없어요.'],
+    ICTG: ['유행 득템러', '유행템이 싸면 바로 결제', '유행하는 물건이 할인하는 순간을 놓치지 않습니다. 결제 속도가 누구보다 빨라요.', '트렌드를 저렴하게 따라가요.', '장바구니에 하루만 담아두고 다시 생각해 보세요.'],
+    IQME: ['기분파 미식가', '오늘은 나를 위해', '기분이 좋거나 힘든 날, 맛있는 음식과 좋은 경험으로 스스로에게 보상합니다.', '나를 잘 챙기고 스트레스를 잘 풀어요.', '기분 따라 쓰는 돈은 기록해 두면 좋아요.'],
+    IQMG: ['꽂히면 직진러', '마음에 들면 가격은 나중에', '내 취향에 딱 맞는 물건을 만나면 가격표를 보기도 전에 마음이 정해집니다.', '확실한 취향으로 만족스러운 물건을 가져요.', "결제 전에 '일주일 뒤에도 갖고 싶을까?' 물어보세요."],
+    IQTE: ['인싸 체험가', '화제라면 비싸도 해본다', '모두가 이야기하는 공연, 팝업, 여행지를 놓치지 않습니다. 경험이 곧 대화거리예요.', '경험이 풍부하고 이야깃거리가 많아요.', '남들 일정에 맞추다 보면 지갑이 먼저 지쳐요.'],
+    IQTG: ['언박싱 요정', '신상은 일단 뜯어봐야', '새로 나온 유행템을 보면 바로 지르고, 택배 상자를 뜯는 순간을 가장 사랑합니다.', '트렌드에 빠르고 쇼핑을 즐길 줄 알아요.', '사는 순간의 설렘은 짧아요. 한 달 쇼핑 예산을 정해 두세요.'],
+  };
+
+  const $ = (id) => document.getElementById(id);
+  function el(tag, cls, text) {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function codeEl(code, cls) {
+    const n = el('div', cls);
+    for (const ch of code) n.appendChild(el('span', null, ch));
+    return n;
+  }
+
+  // ---------- 시작 화면 그리기 ----------
+  function renderAxes() {
+    const list = $('axisList');
+    AXES.forEach((ax) => {
+      const card = el('div', 'axis-card');
+      card.style.setProperty('--ac', ax.color);
+      card.appendChild(el('h3', null, ax.title));
+      const row = el('div', 'axis-row');
+      [ax.a, ax.b].forEach((side, i) => {
+        const s = el('div', 'axis-side' + (i ? ' right' : ''));
+        const txt = el('div', null, side[1]);
+        txt.appendChild(el('small', null, side[2]));
+        const letter = el('span', 'letter', side[0]);
+        if (i) { s.append(txt, letter); } else { s.append(letter, txt); }
+        row.appendChild(s);
+        if (!i) row.appendChild(el('span', 'axis-vs', 'vs'));
+      });
+      card.appendChild(row);
+      list.appendChild(card);
+    });
+  }
+
+  function renderTypeGrid(target, mine) {
+    target.textContent = '';
+    Object.entries(TYPES).forEach(([code, t]) => {
+      const card = el('div', 'type-card' + (code === mine ? ' mine' : ''));
+      const head = codeEl(code, 'type-code');
+      if (code === mine) head.appendChild(el('span', 'mine-badge', '나'));
+      card.append(head, el('div', 'type-name', t[0]), el('div', 'type-tag', t[1]));
+      target.appendChild(card);
+    });
+  }
+
+  // ---------- 화면 전환 ----------
+  const SCREENS = ['intro', 'quiz', 'printing', 'result'];
+  function show(id) {
+    SCREENS.forEach((s) => { $(s).hidden = s !== id; });
+    window.scrollTo(0, 0);
+  }
+
+  // ---------- 문항 진행 ----------
+  let answers = [];
+  let idx = 0;
+  let locked = false;
+
+  const scale = $('scale');
+  for (let v = 1; v <= 5; v++) {
+    const labels = ['전혀 아니다', '아니다', '보통이다', '그렇다', '매우 그렇다'];
+    const b = el('button', 'dot');
+    b.setAttribute('aria-label', labels[v - 1]);
+    b.addEventListener('click', () => answer(v));
+    scale.appendChild(b);
+  }
+
+  function renderQuestion() {
+    const [axis, , text] = QUESTIONS[idx];
+    const color = AXES[axis].color;
+    $('quiz').style.setProperty('--ac', color);
+    $('qnum').textContent = 'Q' + (idx + 1) + ' · ' + AXES[axis].title;
+    $('qtext').textContent = text;
+    $('count').textContent = (idx + 1) + ' / ' + QUESTIONS.length;
+    $('bar').style.width = (idx / QUESTIONS.length * 100) + '%';
+    $('backBtn').disabled = idx === 0;
+    [...scale.children].forEach((d, i) => d.classList.toggle('on', answers[idx] === i + 1));
+    const card = $('qcard');
+    card.classList.remove('swap');
+    void card.offsetWidth;
+    card.classList.add('swap');
+  }
+
+  function answer(v) {
+    if (locked) return;
+    locked = true;
+    answers[idx] = v;
+    [...scale.children].forEach((d, i) => d.classList.toggle('on', i + 1 === v));
+    setTimeout(() => {
+      locked = false;
+      if (idx < QUESTIONS.length - 1) {
+        idx++;
+        renderQuestion();
+      } else {
+        $('bar').style.width = '100%';
+        finish();
+      }
+    }, 260);
+  }
+
+  function startQuiz() {
+    answers = [];
+    idx = 0;
+    history.replaceState(null, '', location.pathname);
+    show('quiz');
+    renderQuestion();
+  }
+
+  // ---------- 채점 ----------
+  // 축마다 6문항, 'a' 쪽 점수를 6~30점으로 합산 → 0~100%로 환산
+  function score() {
+    const sums = [0, 0, 0, 0];
+    const counts = [0, 0, 0, 0];
+    QUESTIONS.forEach(([axis, side], i) => {
+      const v = answers[i];
+      sums[axis] += side === 'a' ? v : 6 - v;
+      counts[axis]++;
+    });
+    return sums.map((s, i) => Math.round((s - counts[i]) / (counts[i] * 4) * 100));
+  }
+
+  function codeFrom(pcts) {
+    return pcts.map((p, i) => (p >= 50 ? AXES[i].a[0] : AXES[i].b[0])).join('');
+  }
+
+  function finish() {
+    const pcts = score();
+    const code = codeFrom(pcts);
+    history.replaceState(null, '', '#r=' + code + '-' + pcts.join('-'));
+    show('printing');
+    setTimeout(() => showResult(code, pcts), 1600);
+  }
+
+  // ---------- 결과 ----------
+  function showResult(code, pcts) {
+    const t = TYPES[code];
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    $('rDate').textContent = now.getFullYear() + '.' + pad(now.getMonth() + 1) + '.' + pad(now.getDate()) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
+    $('rNo').textContent = 'No. ' + String(Math.floor(Math.random() * 9000) + 1000);
+
+    const items = $('rItems');
+    items.textContent = '';
+    const fills = [];
+    AXES.forEach((ax, i) => {
+      const pA = pcts[i];
+      const pB = 100 - pA;
+      const aWins = pA >= 50;
+      const item = el('div', 'r-item');
+      item.style.setProperty('--ac', ax.color);
+      const head = el('div', 'r-item-head');
+      head.append(el('span', null, ax.title), el('span', null, (aWins ? pA : pB) + '%'));
+      const row = el('div', 'r-item-row');
+      const left = el('span', 'side' + (aWins ? ' win' : ''), ax.a[0] + ' ' + ax.a[1]);
+      const right = el('span', 'side' + (aWins ? '' : ' win'), ax.b[1] + ' ' + ax.b[0]);
+      const track = el('div', 'r-track');
+      const fill = el('div', 'r-fill ' + (aWins ? 'left' : 'right'));
+      track.append(fill, el('div', 'r-mid'));
+      row.append(left, track, right);
+      item.append(head, row);
+      items.appendChild(item);
+      fills.push([fill, aWins ? pA : pB]);
+    });
+
+    const rc = $('rCode');
+    rc.textContent = '';
+    for (const ch of code) rc.appendChild(el('span', null, ch));
+    $('rName').textContent = t[0];
+    $('rTag').textContent = '“' + t[1] + '”';
+    $('rDesc').textContent = t[2];
+    $('rGood').textContent = t[3];
+    $('rTip').textContent = t[4];
+    renderTypeGrid($('typeGridResult'), code);
+
+    show('result');
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      fills.forEach(([f, p]) => { f.style.width = p + '%'; });
+    }));
+  }
+
+  // 공유 링크(#r=PCME-72-40-61-55)로 들어오면 결과 바로 보여주기
+  function fromHash() {
+    const m = location.hash.match(/^#r=([A-Z]{4})-(\d{1,3})-(\d{1,3})-(\d{1,3})-(\d{1,3})$/);
+    if (!m) return false;
+    const pcts = m.slice(2).map(Number);
+    if (pcts.some((p) => p > 100)) return false;
+    const code = codeFrom(pcts);
+    if (code !== m[1] || !TYPES[code]) return false;
+    showResult(code, pcts);
+    return true;
+  }
+
+  // ---------- 기타 ----------
+  let toastTimer;
+  function toast(msg) {
+    const t = $('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+  }
+
+  function copyLink() {
+    const url = location.href;
+    const fallback = () => {
+      const ta = el('textarea');
+      ta.value = url;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); toast('결과 링크를 복사했어요'); }
+      catch (e) { toast('복사에 실패했어요'); }
+      ta.remove();
+    };
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(url).then(() => toast('결과 링크를 복사했어요'), fallback);
+    } else {
+      fallback();
+    }
+  }
+
+  $('startBtn').addEventListener('click', startQuiz);
+  $('retryBtn').addEventListener('click', startQuiz);
+  $('copyBtn').addEventListener('click', copyLink);
+  $('backBtn').addEventListener('click', () => {
+    if (idx > 0 && !locked) { idx--; renderQuestion(); }
+  });
+  document.addEventListener('keydown', (e) => {
+    if ($('quiz').hidden) return;
+    if (e.key >= '1' && e.key <= '5') answer(Number(e.key));
+    if (e.key === 'Backspace' || e.key === 'ArrowLeft') $('backBtn').click();
+  });
+
+  renderAxes();
+  renderTypeGrid($('typeGridIntro'));
+  if (!fromHash()) show('intro');
+</script>
+</body>
+</html>
